@@ -171,19 +171,19 @@ void scan()
 {
 
     DistanciaFrontalAnterior = DistanciaFrontal;
-    DistanciaFrontal = Tempo = 0;
+    DistanciaFrontal = Tempo = 0;// Limpa as duas variaveis antes de usar
     delay(DelayEntrePing);
     Tempo = UltrasomFrontal.ping();
     DistanciaFrontal = Tempo / US_ROUNDTRIP_CM;
 
-    DistanciaLateralEsquerdaAnterior = DistanciaFrontal;
-    DistanciaLateralEsquerda = Tempo = 0;
+    DistanciaLateralEsquerdaAnterior = DistanciaLateralEsquerda;
+    DistanciaLateralEsquerda = Tempo = 0;// Limpa as duas variaveis antes de usar
     delay(DelayEntrePing);
     Tempo = UltrasomLateralEsquerdo.ping();
     DistanciaLateralEsquerda = Tempo / US_ROUNDTRIP_CM;
 
     DistanciaLateralDireitaAnterior = DistanciaLateralDireita;
-    DistanciaLateralDireita = Tempo = 0;
+    DistanciaLateralDireita = Tempo = 0;// Limpa as duas variaveis antes de usar
     delay(DelayEntrePing);
     Tempo = UltrasomLateralDireito.ping();
     DistanciaLateralDireita = Tempo / US_ROUNDTRIP_CM;
