@@ -14,6 +14,9 @@
 #define DistanciaMaximaUltrasonico 300// Distancia maxima de leitura do ultrasom 3 m
 #define ForcaMediaMotor            128// TODO: medir a forca media e alterar
 #define ForcaAltaMotor             254// TODO: medir forca maxima do motor e alterar
+// Constantes que definem o inicio, fim de comando
+#define InicioDeComando            '*'
+#define FimDeComando               '#'
 // Constantes que representam os motores de vibracao
 #define MotorFrontal                 5// Pinos que estao ligados no motor frontal
 #define MotorEsquerdo                6// Pinos que estao ligados no motor esquerdo
@@ -45,7 +48,7 @@
 // Estrutura que controla em qual estado do programa estamos rodando
 enum EstadoDeExecucao
 {
-    EstadoInicial=1,
+    MotoresDesligados=1,  // Motores desligados.
     NavegacaoComMotores,
     NavegacaoComMotoresLed,
     NavegacaoComMotoresLedSom,
@@ -93,7 +96,9 @@ unsigned int Tempo;
 //  declara o estado inicial que representa o que o app
 //  esta fazendo no momento
 estado estado_atual_app;
-
+// TODO: mudar esta string que serve para pegar parametro
+String string;
+char o_comando;
 
 // Retorna a diferenca do valor atual com valor anterior.
 int compara_distancias(unsigned int valor_atual, unsigned int valor_anterior);
@@ -103,6 +108,12 @@ void trata_retorno_das_distancia_com_vibracao(int diferenca_das_distancias, Stri
 void desliga_motor(int numero_motor_desligar);
 void setup()
 {
+
+    // Inicializa serial que fara comunicacao com andoid
+    Serial.begin(9600);
+    Serial.println("Ola, EuSonar");
+    Serial.flush();
+    // Inicializa as variaveis que sao sobrescritas apos primeira leitura
     DistanciaFrontal = 0;
     DistanciaFrontalAnterior = 0;
     DistanciaLateralEsquerda = 0;
@@ -110,7 +121,7 @@ void setup()
     DistanciaLateralDireita = 0;
     DistanciaLateralDireitaAnterior = 0;
 
-    estado_atual_app = EstadoInicial;
+    estado_atual_app = NavegacaoComMotores;
     // Descomente a linha de baixo para debugar
     // Serial.begin(115200);
 
@@ -129,37 +140,79 @@ void setup()
 
 void loop()
 {
+
+    Serial.flush();
+    if ( Serial.available() < 1 )
+    {
+        acao_padrao_quando_nenhuma_leitura_foi_feita();  // NavegacaoComMotores
+    }
+    else
+    {
+    
+        if( Serial.available() > 0 )
+        {
+            string = "";
+        }
+        while( Serial.available() > 0 )
+        {
+            o_comando = ( (byte)Serial.read() );
+            if( o_comando == ':' )
+            {
+                break;
+            }
+            else
+            {
+                string += o_comando; 
+            }
+            delay(1);  // Por motivos puramente exotericos e numerologicos
+        }
+    }
+
+    trata_comando_lido_pelo_bluetooth();
     // Independentemente do estado, sempre leio o ultrasom.
     scan();
-    // verifico em qual estado de execucao esta o app e chamo
+    // Leio bluetooth para pegar o estado de execucao
     // sua respectiva funcao
     switch( estado_atual_app )
     {
-        case EstadoInicial :
+        case MotoresDesligados :
+            estado_motores_desligados();
             break;
         case NavegacaoComMotores :
+            estado_navegacao_com_motores();
             break;
         case NavegacaoComMotoresLed :
+            esta_navegacao_com_motores_led();
             break;
         case NavegacaoComMotoresLedSom :
+            estado_navegacao_com_motores_led_som();
             break;
         case ControleRemotoComMotores :
+            estado_controle_remoto_com_motores();
             break;
         case ControleRemotoComMotoresSom :
+            estado_controle_remoto_com_motores_som();
             break;
         case ControleRemotoComMotoresSomLed :
+            estado_controle_remoto_com_motores_som_led();
             break;
         case ReplayDeRotaSemAvisoDeObstaculo :
+            estado_replay_de_rota_sem_aviso_de_obstaculo();
             break;
         case ReplayDeRotaComAvisoDeObstaculoVibracao :
+            estado_replay_de_rota_com_aviso_de_obstaculo_vibracao();
             break;
         case ReplayDeRotaComAvisoDeObstaculoVibracaoSom :
+            estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som();
             break;
         case ReplayDeRotaComAvisoDeObstaculoVibracaoSomLed :
+            estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som_led();
             break;
         case GravacaoRota :
+            estado_gravacao_rota();
             break;
         case TesteDebug :
+            estado_teste_debug();
             break;
         default:
             printf("Default atingido");
@@ -327,4 +380,123 @@ void liga_motor(String posicao_motor, int potencia)
         analogWrite(numero_motor_ligar, potencia);
     }
 
+}
+// Acao tomada caso nao esiver recebendo nada pelo bluetooth
+void acao_padrao_quando_nenhuma_leitura_foi_feita()
+{
+    estado_atual_app = NavegacaoComMotores;
+}
+// Pega valor lido e pelo bluetooth e seta estado do app pelo seu valor correspondente
+void trata_comando_lido_pelo_bluetooth()
+{
+
+    if(string == "MotoresDesligados")
+    {
+        estado_atual_app = MotoresDesligados;
+    }
+    else if(string == "NavegacaoComMotores")
+    {
+        estado_atual_app = NavegacaoComMotores; 
+    }
+    else if(string == "NavegacaoComMotoresLed")
+    {
+        estado_atual_app = NavegacaoComMotoresLed;
+    }
+    else if(string == "NavegacaoComMotoresLedSom" )
+    {
+        estado_atual_app = NavegacaoComMotoresLedSom;
+    }
+    else if(string == "ControleRemotoComMotores")
+    {
+        estado_atual_app = ControleRemotoComMotores;
+    }
+    else if(string == "ControleRemotoComMotoresSom")
+    {
+        estado_atual_app = ControleRemotoComMotoresSom;
+    }
+    else if(string == "ControleRemotoComMotoresSomLed")
+    {
+        estado_atual_app = ControleRemotoComMotoresSomLed;
+    }
+    else if(string == "ReplayDeRotaSemAvisoDeObstaculo")
+    {
+        estado_atual_app = ReplayDeRotaSemAvisoDeObstaculo;
+    }
+    else if(string == "ReplayDeRotaComAvisoDeObstaculoVibracao")
+    {
+        estado_atual_app = ReplayDeRotaComAvisoDeObstaculoVibracao;
+    }
+    else if(string == "ReplayDeRotaComAvisoDeObstaculoVibracaoSom")
+    {
+        estado_atual_app = ReplayDeRotaComAvisoDeObstaculoVibracaoSom;
+    }
+    else if(string == "ReplayDeRotaComAvisoDeObstaculoVibracaoSomLed")
+    {
+        estado_atual_app = ReplayDeRotaComAvisoDeObstaculoVibracaoSomLed;
+    }
+    else if(string == "GravacaoRota")
+    {
+        estado_atual_app = GravacaoRota;
+    }
+    else if(string == "TesteDebug")
+    {
+        estado_atual_app = TesteDebug;
+    }
+    else
+    {  // Valor padrao.
+        estado_atual_app = NavegacaoComMotores;
+    }
+}
+
+void estado_motores_desligados()
+{
+    printf("estado_motores_desligados");
+}
+void estado_navegacao_com_motores()
+{
+    printf("estado_navegacao_com_motore");
+}
+void esta_navegacao_com_motores_led()
+{
+    printf("esta_navegacao_com_motores_led");
+}
+void estado_navegacao_com_motores_led_som()
+{
+    printf("estado_navegacao_com_motores_led_som");
+}
+void estado_controle_remoto_com_motores()
+{
+    printf("esta_controle_remoto_com_motores");
+}
+void estado_controle_remoto_com_motores_som()
+{
+    printf("estado_controle_remoto_com_motores_som");
+}
+void estado_controle_remoto_com_motores_som_led()
+{
+    printf("estado_controle_remoto_com_motores_som_led");
+}
+void estado_replay_de_rota_sem_aviso_de_obstaculo()
+{
+    printf("estado_replay_de_rota_sem_aviso_de_obstaculo");
+}
+void estado_replay_de_rota_com_aviso_de_obstaculo_vibracao()
+{
+    printf("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao");
+}
+void estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som()
+{
+    printf("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som");
+}
+void estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som_led()
+{
+    printf("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som_led");
+}
+void estado_gravacao_rota()
+{
+    printf("estado_gravacao_rota");
+}
+void estado_teste_debug()
+{
+    printf("estado_teste_debug");
 }
