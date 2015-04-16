@@ -7,44 +7,46 @@
 
 #include<NewPing.h>
 // Constantes de configuracao geral
-#define DelayEntrePing              50// Tempo de espera entre as leituras ultrasom
-#define DistanciaMediaBraco         50// Distancia media braco humano
-#define DistanciaMediaPasso         90// Distancia media passo humano
-#define Desligado                    0
-#define DistanciaMaximaUltrasonico 300// Distancia maxima de leitura do ultrasom 3 m
-#define ForcaMediaMotor            128// TODO: medir a forca media e alterar
-#define ForcaAltaMotor             254// TODO: medir forca maxima do motor e alterar
+#define DelayEntrePing              75  // Tempo em ms de espera entre as leituras ultrasom
+#define DistanciaMediaBraco         50  // Distancia media braco humano
+#define DistanciaMediaPasso         90  // Distancia media passo humano
+#define Desligado                    0  
+#define DistanciaMaximaUltrasonico 300  // Distancia maxima de leitura do ultrasom 3 m
+#define ForcaMediaMotor            128  // TODO: medir a forca media e alterar
+#define ForcaAltaMotor             254  // TODO: medir forca maxima do motor e alterar
 // Constantes que definem o inicio, fim de comando
 #define InicioDeComando            '*'
 #define FimDeComando               '#'
 // Constantes que representam os motores de vibracao
-#define MotorFrontal                 5// Pinos que estao ligados no motor frontal
-#define MotorEsquerdo                6// Pinos que estao ligados no motor esquerdo
-#define MotorDireito                 7// Pinos que estao ligados no motor direito
-#define MotorTrazeiro                8// Pinos que estao ligados no motor trazeiro
+#define MotorFrontal                 5  // Pinos que estao ligados no motor frontal
+#define MotorEsquerdo                6  // Pinos que estao ligados no motor esquerdo
+#define MotorDireito                 7  // Pinos que estao ligados no motor direito
+#define MotorTrazeiro                8  // Pinos que estao ligados no motor trazeiro
 
 // Constantes que representam os leds que ajudam a debugar
-#define LedFrontal                   9// TODO: Estes leds ainda nao estao sendo usado
-#define LedEsquerdo                 10// TODO: Estes leds ainda nao estao sendo usado
-#define LedDireito                  11// TODO: Estes leds ainda nao estao sendo usado
-#define LedTrazeiro                 12// TODO: Estes leds ainda nao estao sendo usado
+#define LedFrontal                   9  // TODO: Estes leds ainda nao estao sendo usado
+#define LedEsquerdo                 10  // TODO: Estes leds ainda nao estao sendo usado
+#define LedDireito                  11  // TODO: Estes leds ainda nao estao sendo usado
+#define LedTrazeiro                 12  // TODO: Estes leds ainda nao estao sendo usado
 
 // Constantes do sensor ultrasonico frontal
-#define UltrasonicoFrontalTrigger   13// Numero do pino em que sera ligado o trigger
-#define UltrasonicoFrontalEcho      14// Numero do pino em que sera legado o echo
+#define UltrasonicoFrontalTrigger   13  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoFrontalEcho      14  // Numero do pino em que sera legado o echo
 
 // Constantes do sensor ultrasonico da lateral esquerda
-#define UltrasonicoEsquerdoTrigger  15// Numero do pino em que sera ligado o trigger
-#define UltrasonicoEsquerdoEcho     16// Numero do pino em que sera legado o echo
+#define UltrasonicoEsquerdoTrigger  15  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoEsquerdoEcho     16  // Numero do pino em que sera legado o echo
 
 // Constantes do sensor ultrasonico da lateral direita
-#define UltrasonicoDireitoTrigger   17// Numero do pino em que sera ligado o trigger
-#define UltrasonicoDireitoEcho      18// Numero do pino em que sera legado o echo
+#define UltrasonicoDireitoTrigger   17  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoDireitoEcho      18  // Numero do pino em que sera legado o echo
 
 // Constantes do sensor ultrasonico da lateral direita
-#define UltrasonicoDireitoTrigger   19// Numero do pino em que sera ligado o trigger
-#define UltrasonicoDireitoEcho      20// Numero do pino em que sera legado o echo
+#define UltrasonicoDireitoTrigger   19  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoDireitoEcho      20  // Numero do pino em que sera legado o echo
 
+#define QtdSonares                   3  // Quantidade de senssores ultra som
+#define IntervaloEntrePings         33  // Tempo em ms entre pings evitar echo cruzados 
 // Estrutura que controla em qual estado do programa estamos rodando
 enum EstadoDeExecucao
 {
@@ -83,6 +85,10 @@ NewPing UltrasomLateralDireito(
     UltrasonicoDireitoEcho,
     DistanciaMaximaUltrasonico
 );
+//  Valores que conterao o tempo de espera de cada sensor
+//  ultrasom antes de uma nova leitura
+unsigned long CronometroPing[QtdSonares];
+unsigned int UltraSomAtual = 0  // Mantem qual ultrasom esta ativo
 
 //  somente valores positivos e por isso serao unsigned
 unsigned int DistanciaFrontal;
@@ -113,6 +119,12 @@ void setup()
     Serial.begin(9600);
     Serial.println("Ola, EuSonar");
     Serial.flush();
+    CronometroPing[0] = millis() + 75;  // Primeiro ping começa as 75ms
+    for(unsigned int i = 1; i < QtdSonares; i++)
+    {
+        CronometroPing[i] = CronometroPing[i-1] + IntervaloEntrePings;
+    }
+
     // Inicializa as variaveis que sao sobrescritas apos primeira leitura
     DistanciaFrontal = 0;
     DistanciaFrontalAnterior = 0;
@@ -223,24 +235,43 @@ void loop()
 void scan()
 {
 
-    DistanciaFrontalAnterior = DistanciaFrontal;
-    DistanciaFrontal = Tempo = 0;// Limpa as duas variaveis antes de usar
-    delay(DelayEntrePing);
-    Tempo = UltrasomFrontal.ping();
-    DistanciaFrontal = Tempo / US_ROUNDTRIP_CM;
+    if(millis() >= CronometroPing[0])
+    {
+        // Esta na hora deste senssor pingar?
+        CronometroPing[0] += IntervaloEntrePings * QtdSonares;
 
-    DistanciaLateralEsquerdaAnterior = DistanciaLateralEsquerda;
-    DistanciaLateralEsquerda = Tempo = 0;// Limpa as duas variaveis antes de usar
-    delay(DelayEntrePing);
-    Tempo = UltrasomLateralEsquerdo.ping();
-    DistanciaLateralEsquerda = Tempo / US_ROUNDTRIP_CM;
+        DistanciaFrontalAnterior = DistanciaFrontal;
+        DistanciaFrontal = Tempo = 0;// Limpa as duas variaveis antes de usar
+        //delay(DelayEntrePing);
+        //UltrasomFrontal.timer_stop();
+        Tempo = UltrasomFrontal.ping_median(5);
+        DistanciaFrontal = Tempo / US_ROUNDTRIP_CM;
+    }
 
-    DistanciaLateralDireitaAnterior = DistanciaLateralDireita;
-    DistanciaLateralDireita = Tempo = 0;// Limpa as duas variaveis antes de usar
-    delay(DelayEntrePing);
-    Tempo = UltrasomLateralDireito.ping();
-    DistanciaLateralDireita = Tempo / US_ROUNDTRIP_CM;
+    if(millis() >= CronometroPing[1])
+    {
+        // Esta na hora deste senssor pingar?
+        CronometroPing[1] += IntervaloEntrePings * QtdSonares;
 
+        DistanciaLateralEsquerdaAnterior = DistanciaLateralEsquerda;
+        DistanciaLateralEsquerda = Tempo = 0;// Limpa as duas variaveis antes de usar
+        //delay(DelayEntrePing);
+        UltrasomLateralEsquerdo.timer_stop();
+        Tempo = UltrasomLateralEsquerdo.ping_median(5);
+        DistanciaLateralEsquerda = Tempo / US_ROUNDTRIP_CM;
+    }
+
+    if(millis() >= CronometroPing[2])
+    {
+        CronometroPing[2] += IntervaloEntrePings * QtdSonares;
+
+        DistanciaLateralDireitaAnterior = DistanciaLateralDireita;
+        DistanciaLateralDireita = Tempo = 0;// Limpa as duas variaveis antes de usar
+        //delay(DelayEntrePing);
+        UltrasomLateralDireito.timer_stop();
+        Tempo = UltrasomLateralDireito.ping_median(5);
+        DistanciaLateralDireita = Tempo / US_ROUNDTRIP_CM;
+    }
 }
 
 // De acordo com as distancias lidas por scan() vibra os motores.
