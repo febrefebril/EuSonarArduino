@@ -267,11 +267,11 @@ void scan()
         Serial.print("millis(): ");
         Serial.print(millis());
         Serial.print(" | ");
-        Serial.print("CronometroPing sensor frontal: ");
+        Serial.print("CronometroPing sensor lateral esquerdo: ");
         Serial.print(CronometroPing[1]);
         Serial.println("");
         CronometroPing[1] += IntervaloEntrePings * QtdSonares;
-        Serial.print("Novo valor de CronometroPing sensor frontal:");
+        Serial.print("Novo valor de CronometroPing sensor lateral esquerdo:");
         Serial.print(CronometroPing[1]);
         Serial.println("");
         DistanciaLateralEsquerdaAnterior = DistanciaLateralEsquerda;
@@ -288,15 +288,15 @@ void scan()
     if(millis() >= CronometroPing[2])
     {
         // Esta na hora deste senssor pingar?
-        Serial.println("Tratando Sensor UltrasomLateralEsquerdo.");
+        Serial.println("Tratando Sensor UltrasomLateralDireito.");
         Serial.print("millis(): ");
         Serial.print(millis());
         Serial.print(" | ");
-        Serial.print("CronometroPing sensor frontal: ");
+        Serial.print("CronometroPing sensor lateral direito: ");
         Serial.print(CronometroPing[2]);
         Serial.println("");
         CronometroPing[2] += IntervaloEntrePings * QtdSonares;
-        Serial.print("Novo valor de CronometroPing sensor frontal:");
+        Serial.print("Novo valor de CronometroPing lateral direito:");
         Serial.print(CronometroPing[2]);
         Serial.println("");
         DistanciaLateralDireitaAnterior = DistanciaLateralDireita;
@@ -305,7 +305,7 @@ void scan()
         UltrasomLateralDireito.timer_stop();
         Tempo = UltrasomLateralDireito.ping_median(5);
         DistanciaLateralDireita = Tempo / US_ROUNDTRIP_CM;
-        Serial.print("Distancia Lateral Esquerda: ");
+        Serial.print("Distancia Lateral Direito: ");
         Serial.print(DistanciaLateralDireita);
         Serial.println("");
     }
