@@ -416,67 +416,91 @@ void liga_motor(String posicao_motor, int potencia)
 void acao_padrao_quando_nenhuma_leitura_foi_feita()
 {
     estado_atual_app = NavegacaoComMotores;
+    Serial.println("Acao padrao quando nenhuma leitura por Bluetooth feita.");
+    Serial.print("Estado Atual: ");
+    Serial.print(estado_atual_app);
+    Serial.println("");
+
 }
 // Pega valor lido e pelo bluetooth e seta estado do app pelo seu valor correspondente
+// Quando possivel alterar esta grande arvore de natal :D
 void trata_comando_lido_pelo_bluetooth()
 {
+    Serial.println("Tratando comando lido pelo Bluetooth.");
 
     if(string == "MotoresDesligados")
     {
+        Serial.println("Estado: MotoresDesligados");
         estado_atual_app = MotoresDesligados;
     }
     else if(string == "NavegacaoComMotores")
     {
+        Serial.println("Estado: NavegacaoComMotores");
         estado_atual_app = NavegacaoComMotores; 
     }
     else if(string == "NavegacaoComMotoresLed")
     {
+        Serial.println("Estado: NavegacaoComMotoresLed");
         estado_atual_app = NavegacaoComMotoresLed;
     }
     else if(string == "NavegacaoComMotoresLedSom" )
     {
+        Serial.println("Estado: NavegacaoComMotoresLedSom");
         estado_atual_app = NavegacaoComMotoresLedSom;
     }
     else if(string == "ControleRemotoComMotores")
     {
+        Serial.println("Estado: ControleRemotoComMotores");
         estado_atual_app = ControleRemotoComMotores;
     }
     else if(string == "ControleRemotoComMotoresSom")
     {
+        Serial.println("Estado: ControleRemotoComMotoresSom");
         estado_atual_app = ControleRemotoComMotoresSom;
     }
     else if(string == "ControleRemotoComMotoresSomLed")
     {
+        Serial.println("Estado: ControleRemotoComMotoresSomLed");
         estado_atual_app = ControleRemotoComMotoresSomLed;
     }
     else if(string == "ReplayDeRotaSemAvisoDeObstaculo")
     {
+        Serial.println("Estado: ReplayDeRotaSemAvisoDeObstaculo");
         estado_atual_app = ReplayDeRotaSemAvisoDeObstaculo;
     }
     else if(string == "ReplayDeRotaComAvisoDeObstaculoVibracao")
     {
+        Serial.println("Estado: ReplayDeRotaComAvisoDeObstaculoVibracao");
         estado_atual_app = ReplayDeRotaComAvisoDeObstaculoVibracao;
     }
     else if(string == "ReplayDeRotaComAvisoDeObstaculoVibracaoSom")
     {
+        Serial.println("Estado: ReplayDeRotaComAvisoDeObstaculoVibracaoSom");
         estado_atual_app = ReplayDeRotaComAvisoDeObstaculoVibracaoSom;
     }
     else if(string == "ReplayDeRotaComAvisoDeObstaculoVibracaoSomLed")
     {
+        Serial.println("Estado: ReplayDeRotaComAvisoDeObstaculoVibracaoSomLed");
         estado_atual_app = ReplayDeRotaComAvisoDeObstaculoVibracaoSomLed;
     }
     else if(string == "GravacaoRota")
     {
+        Serial.println("Estado: GravacaoRota");
         estado_atual_app = GravacaoRota;
     }
     else if(string == "TesteDebug")
     {
+        Serial.println("Estado: TesteDebug");
         estado_atual_app = TesteDebug;
     }
     else
     {  // Valor padrao.
+        Serial.println("Estado: NavegacaoComMotores");
         estado_atual_app = NavegacaoComMotores;
     }
+    Serial.print("Estado atual: ");
+    Serial.print(estado_atual_app);
+    Serial.println("");
 }
 
 void estado_motores_desligados()
