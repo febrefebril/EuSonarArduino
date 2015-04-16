@@ -227,50 +227,87 @@ void loop()
             estado_teste_debug();
             break;
         default:
-            printf("Default atingido");
+            Serial.println("Default atingido");
     }
 }
 
 // Faz a leitura de todos os sensores ultrasom e seta as variaveis com as distancias lidas.
 void scan()
-{
-
+{// TODO: Refatorar esta funcao!!!
+    Serial.println("Entrando em scan");
     if(millis() >= CronometroPing[0])
     {
         // Esta na hora deste senssor pingar?
+        Serial.println("Tratando Sensor UltrasomFrontal.");
+        Serial.print("millis(): ");
+        Serial.print(millis());
+        Serial.print(" | ");
+        Serial.print("CronometroPing sensor frontal: ");
+        Serial.print(CronometroPing[0]);
+        Serial.println("");
         CronometroPing[0] += IntervaloEntrePings * QtdSonares;
-
+        Serial.print("Novo valor de CronometroPing sensor frontal:");
+        Serial.print(CronometroPing[0]);
+        Serial.println("");
         DistanciaFrontalAnterior = DistanciaFrontal;
         DistanciaFrontal = Tempo = 0;// Limpa as duas variaveis antes de usar
         //delay(DelayEntrePing);
         //UltrasomFrontal.timer_stop();
         Tempo = UltrasomFrontal.ping_median(5);
         DistanciaFrontal = Tempo / US_ROUNDTRIP_CM;
+        Serial.print("Distancia Frontal: ");
+        Serial.print(DistanciaFrontal);
+        Serial.println("");
     }
 
     if(millis() >= CronometroPing[1])
     {
         // Esta na hora deste senssor pingar?
+        Serial.println("Tratando Sensor UltrasomLateralEsquerdo.");
+        Serial.print("millis(): ");
+        Serial.print(millis());
+        Serial.print(" | ");
+        Serial.print("CronometroPing sensor frontal: ");
+        Serial.print(CronometroPing[1]);
+        Serial.println("");
         CronometroPing[1] += IntervaloEntrePings * QtdSonares;
-
+        Serial.print("Novo valor de CronometroPing sensor frontal:");
+        Serial.print(CronometroPing[1]);
+        Serial.println("");
         DistanciaLateralEsquerdaAnterior = DistanciaLateralEsquerda;
         DistanciaLateralEsquerda = Tempo = 0;// Limpa as duas variaveis antes de usar
         //delay(DelayEntrePing);
         UltrasomLateralEsquerdo.timer_stop();
         Tempo = UltrasomLateralEsquerdo.ping_median(5);
         DistanciaLateralEsquerda = Tempo / US_ROUNDTRIP_CM;
+        Serial.print("Distancia Lateral Esquerda: ");
+        Serial.print(DistanciaLateralEsquerda);
+        Serial.println("");
     }
 
     if(millis() >= CronometroPing[2])
     {
+        // Esta na hora deste senssor pingar?
+        Serial.println("Tratando Sensor UltrasomLateralEsquerdo.");
+        Serial.print("millis(): ");
+        Serial.print(millis());
+        Serial.print(" | ");
+        Serial.print("CronometroPing sensor frontal: ");
+        Serial.print(CronometroPing[2]);
+        Serial.println("");
         CronometroPing[2] += IntervaloEntrePings * QtdSonares;
-
+        Serial.print("Novo valor de CronometroPing sensor frontal:");
+        Serial.print(CronometroPing[2]);
+        Serial.println("");
         DistanciaLateralDireitaAnterior = DistanciaLateralDireita;
         DistanciaLateralDireita = Tempo = 0;// Limpa as duas variaveis antes de usar
         //delay(DelayEntrePing);
         UltrasomLateralDireito.timer_stop();
         Tempo = UltrasomLateralDireito.ping_median(5);
         DistanciaLateralDireita = Tempo / US_ROUNDTRIP_CM;
+        Serial.print("Distancia Lateral Esquerda: ");
+        Serial.print(DistanciaLateralDireita);
+        Serial.println("");
     }
 }
 
