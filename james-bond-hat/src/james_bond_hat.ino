@@ -542,53 +542,53 @@ void trata_comando_lido_pelo_bluetooth()
 
 void estado_motores_desligados()
 {
-    printf("estado_motores_desligados");
+    Serial.println("estado_motores_desligados");
 }
 void estado_navegacao_com_motores()
 {
-    printf("estado_navegacao_com_motore");
+    Serial.println("estado_navegacao_com_motore");
 }
 void esta_navegacao_com_motores_led()
 {
-    printf("esta_navegacao_com_motores_led");
+    Serial.println("esta_navegacao_com_motores_led");
 }
 void estado_navegacao_com_motores_led_som()
 {
-    printf("estado_navegacao_com_motores_led_som");
+    Serial.println("estado_navegacao_com_motores_led_som");
 }
 void estado_controle_remoto_com_motores()
 {
-    printf("esta_controle_remoto_com_motores");
+    Serial.println("esta_controle_remoto_com_motores");
 }
 void estado_controle_remoto_com_motores_som()
 {
-    printf("estado_controle_remoto_com_motores_som");
+    Serial.println("estado_controle_remoto_com_motores_som");
 }
 void estado_controle_remoto_com_motores_som_led()
 {
-    printf("estado_controle_remoto_com_motores_som_led");
+    Serial.println("estado_controle_remoto_com_motores_som_led");
 }
 void estado_replay_de_rota_sem_aviso_de_obstaculo()
 {
-    printf("estado_replay_de_rota_sem_aviso_de_obstaculo");
+    Serial.println("estado_replay_de_rota_sem_aviso_de_obstaculo");
 }
 void estado_replay_de_rota_com_aviso_de_obstaculo_vibracao()
 {
-    printf("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao");
+    Serial.println("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao");
 }
 void estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som()
 {
-    printf("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som");
+    Serial.println("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som");
 }
 void estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som_led()
 {
-    printf("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som_led");
+    Serial.println("estado_replay_de_rota_com_aviso_de_obstaculo_vibracao_som_led");
 }
 void estado_gravacao_rota()
 {
-    printf("estado_gravacao_rota");
+    Serial.println("estado_gravacao_rota");
 }
 void estado_teste_debug()
 {
-    printf("estado_teste_debug");
+    Serial.println("estado_teste_debug");
 }
