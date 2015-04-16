@@ -318,25 +318,32 @@ void navegacao_com_motor()
 
 void tratamento_motor(String posicao)
 {
+    Serial.println("Entrando em tratamento_motor()");
     int distancia_medida = 0; // vai receber a distancia de um dos sensores
     // Verifa se a distancia aumentou ou diminuio.
     int comparacao_distancia = compara_distancias(DistanciaFrontal, DistanciaFrontalAnterior);
     if( posicao == "Frontal" )
     {
+        Serial.println("Trantando motor Frontal");
         distancia_medida = DistanciaFrontal;
     }
     else if ( posicao == "Esquerdo" )
     {
+        Serial.println("Trantando motor Lateral esquerdo");
         distancia_medida = DistanciaLateralEsquerda;
     }
     else if ( posicao == "Direito" )
     {
+        Serial.println("Trantando motor Lateral Direito");
         distancia_medida = DistanciaLateralDireita;
     }
     if( distancia_medida > DistanciaMediaPasso || distancia_medida == Desligado )
     {
         // Distancia segura, desliga motores de vibracao.
         // TODO: fazer funcao que desligue os motores.
+        Serial.print("Desligando Motor: ");
+        Serial.print(posicao);
+        Serial.println("");
         desliga_motor(posicao);
     }
     // Caso exista um objeto entre 50 e 90 cm de um aviso vibratorio medio.
@@ -345,12 +352,18 @@ void tratamento_motor(String posicao)
     {
         // TODO: chamar funcao que vibra com potencia media
         // Compara os valores para saber se o objeto esta se aproximando e da um alerta medio
+        Serial.print("Objeto proximo encontrado na posicao: ");
+        Serial.print(posicao);
+        Serial.println("");
         trata_retorno_das_distancia_com_vibracao(posicao, comparacao_distancia, "MEDIA");
     }
     // Caso em que o objeto se encontra em uma distancia menor que 50 cm, alerta com vibracao forte.
     else
     {
         // TODO: chamar funcao que vibra com potencia forte
+        Serial.print("ATENCAO: Objeto muito proximo ao sensor: ");
+        Serial.print(posicao);
+        Serial.println("");
         trata_retorno_das_distancia_com_vibracao(posicao, comparacao_distancia, "FORTE");
     }
 }
@@ -543,6 +556,7 @@ void estado_motores_desligados()
 void estado_navegacao_com_motores()
 {
     Serial.println("estado_navegacao_com_motore");
+
 }
 void esta_navegacao_com_motores_led()
 {
