@@ -88,7 +88,7 @@ NewPing UltrasomLateralDireito(
 //  Valores que conterao o tempo de espera de cada sensor
 //  ultrasom antes de uma nova leitura
 unsigned long CronometroPing[QtdSonares];
-unsigned int UltraSomAtual = 0  // Mantem qual ultrasom esta ativo
+unsigned int UltraSomAtual = 0;  // Mantem qual ultrasom esta ativo
 
 //  somente valores positivos e por isso serao unsigned
 unsigned int DistanciaFrontal;
