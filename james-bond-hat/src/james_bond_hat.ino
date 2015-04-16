@@ -41,10 +41,6 @@
 #define UltrasonicoDireitoTrigger   17  // Numero do pino em que sera ligado o trigger
 #define UltrasonicoDireitoEcho      18  // Numero do pino em que sera legado o echo
 
-// Constantes do sensor ultrasonico da lateral direita
-#define UltrasonicoDireitoTrigger   19  // Numero do pino em que sera ligado o trigger
-#define UltrasonicoDireitoEcho      20  // Numero do pino em que sera legado o echo
-
 #define QtdSonares                   3  // Quantidade de senssores ultra som
 #define IntervaloEntrePings         33  // Tempo em ms entre pings evitar echo cruzados 
 // Estrutura que controla em qual estado do programa estamos rodando
