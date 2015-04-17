@@ -18,31 +18,39 @@
 #define InicioDeComando            '*'
 #define FimDeComando               '#'
 // Constantes que representam os motores de vibracao
-#define MotorFrontal                 5  // Pinos que estao ligados no motor frontal
-#define MotorEsquerdo                6  // Pinos que estao ligados no motor esquerdo
-#define MotorDireito                 7  // Pinos que estao ligados no motor direito
-#define MotorTrazeiro                8  // Pinos que estao ligados no motor trazeiro
+#define MotorFrontal                11  // Pinos que estao ligados no motor frontal
+#define MotorEsquerdo               10  // Pinos que estao ligados no motor esquerdo
+#define MotorDireito                 9  // Pinos que estao ligados no motor direito
+#define MotorTrazeiro                6  // Pinos que estao ligados no motor trazeiro
 
 // Constantes que representam os leds que ajudam a debugar
-#define LedFrontal                   9  // TODO: Estes leds ainda nao estao sendo usado
-#define LedEsquerdo                 10  // TODO: Estes leds ainda nao estao sendo usado
-#define LedDireito                  11  // TODO: Estes leds ainda nao estao sendo usado
-#define LedTrazeiro                 12  // TODO: Estes leds ainda nao estao sendo usado
+#define LedFrontal                  99  // TODO: Estes leds ainda nao estao sendo usado
+#define LedEsquerdo                 99  // TODO: Estes leds ainda nao estao sendo usado
+#define LedDireito                  99  // TODO: Estes leds ainda nao estao sendo usado
+#define LedTrazeiro                 99  // TODO: Estes leds ainda nao estao sendo usado
 
 // Constantes do sensor ultrasonico frontal
-#define UltrasonicoFrontalTrigger   13  // Numero do pino em que sera ligado o trigger
-#define UltrasonicoFrontalEcho      14  // Numero do pino em que sera legado o echo
+#define UltrasonicoFrontalTrigger   12  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoFrontalEcho       8  // Numero do pino em que sera legado o echo
 
 // Constantes do sensor ultrasonico da lateral esquerda
-#define UltrasonicoEsquerdoTrigger  15  // Numero do pino em que sera ligado o trigger
-#define UltrasonicoEsquerdoEcho     16  // Numero do pino em que sera legado o echo
+#define UltrasonicoEsquerdoTrigger   7  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoEsquerdoEcho      5  // Numero do pino em que sera legado o echo
 
 // Constantes do sensor ultrasonico da lateral direita
-#define UltrasonicoDireitoTrigger   17  // Numero do pino em que sera ligado o trigger
-#define UltrasonicoDireitoEcho      18  // Numero do pino em que sera legado o echo
+#define UltrasonicoDireitoTrigger    4  // Numero do pino em que sera ligado o trigger
+#define UltrasonicoDireitoEcho       3  // Numero do pino em que sera legado o echo
 
 #define QtdSonares                   3  // Quantidade de senssores ultra som
 #define IntervaloEntrePings         33  // Tempo em ms entre pings evitar echo cruzados 
+
+enum MotoresDeVibracao
+{
+    MotorDaFrente=1,
+    MotorDaEsquerda,
+    MotorDaDireita,
+    MotorDeTraz
+};
 // Estrutura que controla em qual estado do programa estamos rodando
 enum EstadoDeExecucao
 {
